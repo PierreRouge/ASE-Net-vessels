@@ -225,7 +225,7 @@ class DYBAC_3D(nn.Module):
            sSE_Module_3D(in_planes),
            Dynamic_conv3d(in_planes=in_planes, out_planes=out_planes,kernel_size=kernel_size,stride=stride,padding=padding),
            nn.BatchNorm3d(out_planes),
-           nn.ReLU(inplace=True), 
+           nn.ReLU(inplace=False), 
         )
     def forward(self, x):
         z = self.dybac(x)
@@ -298,7 +298,7 @@ class Discriminator_3D(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool3d(1)
         self.classifier = nn.Linear(ndf*8, 2)
 
-        self.leaky_relu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
+        self.leaky_relu = nn.LeakyReLU(negative_slope=0.2, inplace=False)
         self.dropout = nn.Dropout3d(0.5)
         # self.Softmax = nn.Softmax()
 

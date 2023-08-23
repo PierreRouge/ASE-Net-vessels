@@ -46,7 +46,7 @@ parser.add_argument('--D_lr', type=float,  default=1e-4,
                     help='maximum discriminator learning rate to train')
 parser.add_argument('--deterministic', type=int,  default=1,
                     help='whether use deterministic training')
-parser.add_argument('--labelnum', type=int,  default=16, help='random seed')
+parser.add_argument('--labelnum', type=int,  default=42, help='random seed')
 parser.add_argument('--seed', type=int,  default=1337, help='random seed')
 parser.add_argument('--consistency_weight', type=float,  default=0.1,
                     help='balance factor to control supervised loss and consistency loss')
@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     labelnum = args.labelnum    # default 16
     labeled_idxs = list(range(labelnum))
-    unlabeled_idxs = list(range(labelnum, 80))
+    unlabeled_idxs = list(range(labelnum, 76))
     batch_sampler = TwoStreamBatchSampler(
         labeled_idxs, unlabeled_idxs, batch_size, batch_size-labeled_bs)
 
