@@ -22,7 +22,7 @@ from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 
 from networks.vnet import VNet
-from networks.discriminator import FC3DDiscriminator
+from networks.discriminator import Discriminator_3D
 
 from dataloaders import utils
 from utils import ramps, losses, metrics
@@ -133,10 +133,10 @@ if __name__ == "__main__":
     ema_model = create_model(ema=True).to(device)
 
 
-    DAN = FC3DDiscriminator(num_classes=num_classes-1)
+    DAN = Discriminator_3D(num_classes=num_classes-1)
     DAN = DAN.to(device)
 
-    DAN1 = FC3DDiscriminator(num_classes=num_classes-1)
+    DAN1 = Discriminator_3D(num_classes=num_classes-1)
     DAN1 = DAN1.to(device)
     db_train = LAHeart(base_dir=train_data_path,
                        split='train',  # train/val split
