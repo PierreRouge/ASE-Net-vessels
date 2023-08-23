@@ -352,9 +352,9 @@ if __name__ == "__main__":
                
                 model.eval()
                 ema_model.eval()
-                with open("data/2018LA_Seg_Training Set" + '/test.list', 'r') as f:
+                with open("../data/2018LA_Seg_Training Set" + '/test.list', 'r') as f:
                     image_list = f.readlines()
-                image_list = ["data/2018LA_Seg_Training Set" + "/" + item.replace('\n', '') + "/mri_norm2.h5" for item in
+                image_list = ["../data/2018LA_Seg_Training Set" + "/" + item.replace('\n', '') + "/mri_norm2.h5" for item in
                     image_list]
                 with torch.no_grad():
                     avg_metric = test_all_case(model, image_list, num_classes=num_classes,
