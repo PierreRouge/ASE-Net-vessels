@@ -351,7 +351,7 @@ if __name__ == "__main__":
             if iter_num >= 500 and iter_num % 200 == 0:
                
                 model.eval()
-                ema_model().eval()
+                ema_model.eval()
                 with open("data/2018LA_Seg_Training Set" + '/test.list', 'r') as f:
                     image_list = f.readlines()
                 image_list = ["data/2018LA_Seg_Training Set" + "/" + item.replace('\n', '') + "/mri_norm2.h5" for item in
