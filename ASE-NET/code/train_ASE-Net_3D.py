@@ -31,7 +31,7 @@ from utils.util import compute_sdf
 from test_util_1 import test_all_case
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str,
-                    default='data/2018LA_Seg_Training Set', help='Name of Experiment')
+                    default='../data/2018LA_Seg_Training Set', help='Name of Experiment')
 parser.add_argument('--exp', type=str,
                     default='LA/DTC_with_consis_weight', help='model_name')
 parser.add_argument('--max_iterations', type=int,
