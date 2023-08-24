@@ -359,12 +359,11 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     avg_metric = test_all_case(model, image_list, num_classes=num_classes,
                                         patch_size=(128, 128, 128), stride_xy=18, stride_z=4,
-                                        save_result=False,
-                                        metric_detail=0, nms=1)
+                                        save_result=False)
                     avg_metric1 = test_all_case(ema_model, image_list, num_classes=num_classes,
                                         patch_size=(128, 128, 128), stride_xy=18, stride_z=4,
-                                        save_result=False,
-                                        metric_detail=0, nms=1)
+                                        save_result=False
+                                        )
 
                 print("test_dice %0.3f" % avg_metric1[0])
                 print("test_jc %0.3f" % avg_metric1[1])
