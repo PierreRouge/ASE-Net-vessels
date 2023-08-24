@@ -352,7 +352,7 @@ if __name__ == "__main__":
                
                 model.eval()
                 ema_model.eval()
-                with open("../data/2018LA_Seg_Training Set" + '/test.list', 'r') as f:
+                with open("../data/2018LA_Seg_Training Set" + '/../test.list', 'r') as f:
                     image_list = f.readlines()
                 image_list = ["../data/2018LA_Seg_Training Set" + "/" + item.replace('\n', '') + "/mra_norm.h5" for item in
                     image_list]
