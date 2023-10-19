@@ -47,6 +47,8 @@ parser.add_argument('--D_lr', type=float,  default=1e-4,
 parser.add_argument('--deterministic', type=int,  default=1,
                     help='whether use deterministic training')
 parser.add_argument('--labelnum', type=int,  default=42, help='random seed')
+parser.add_argument('--maxsamples', type=int,  default=350, help='Number of total samples')
+parser.add_argument('--patch_size', nargs='+', type=int, default=[128, 128, 128], help='Patch _size')
 parser.add_argument('--seed', type=int,  default=1337, help='random seed')
 parser.add_argument('--consistency_weight', type=float,  default=0.1,
                     help='balance factor to control supervised loss and consistency loss')
@@ -90,7 +92,7 @@ torch.manual_seed(args.seed)
 torch.cuda.manual_seed(args.seed)
 
 num_classes = 2
-patch_size = (128, 128, 128)
+patch_size = args.patch_size
 
 def update_ema_variables(model, ema_model, alpha, global_step):
     # Use the true average until the exponential average is more correct
@@ -148,7 +150,7 @@ if __name__ == "__main__":
 
     labelnum = args.labelnum    # default 16
     labeled_idxs = list(range(labelnum))
-    unlabeled_idxs = list(range(labelnum, 76))
+    unlabeled_idxs = list(range(labelnum, args.maxsamples))
     batch_sampler = TwoStreamBatchSampler(
         labeled_idxs, unlabeled_idxs, batch_size, batch_size-labeled_bs)
 
@@ -358,10 +360,10 @@ if __name__ == "__main__":
                     image_list]
                 with torch.no_grad():
                     avg_metric = test_all_case(model, image_list, num_classes=num_classes,
-                                        patch_size=(128, 128, 128), stride_xy=18, stride_z=4,
+                                        patch_size=args.patch_size, stride_xy=18, stride_z=4,
                                         save_result=False)
                     avg_metric1 = test_all_case(ema_model, image_list, num_classes=num_classes,
-                                        patch_size=(128, 128, 128), stride_xy=18, stride_z=4,
+                                        patch_size=args.patch_size, stride_xy=18, stride_z=4,
                                         save_result=False
                                         )
 
