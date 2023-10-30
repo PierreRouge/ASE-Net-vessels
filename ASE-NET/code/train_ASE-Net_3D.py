@@ -176,6 +176,8 @@ if __name__ == "__main__":
         consistency_criterion = losses.softmax_mse_loss
     elif args.consistency_type == 'kl':
         consistency_criterion = losses.softmax_kl_loss
+    elif args.consistency_type == 'dice':
+        consistency_criterion = losses.softmax_dice_loss
     else:
         assert False, args.consistency_type
 
