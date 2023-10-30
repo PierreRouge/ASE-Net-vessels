@@ -344,10 +344,7 @@ if __name__ == "__main__":
             #     save_mode_path = os.path.join(
             #         snapshot_path, 'iter_' + str(iter_num) + '.pth')
             #     torch.save(model.state_dict(), save_mode_path)
-            #     logging.info("save model to {}".format(save_mode_path))
-           
-            if iter_num >= max_iterations:
-                break
+            #     logging.info("save model to {}".format(save_mode_path)
             time1 = time.time()
         ##########test
             if iter_num >= 4000 and iter_num % 1000 == 0:
