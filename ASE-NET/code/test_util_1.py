@@ -80,8 +80,12 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
                 test_patch = torch.from_numpy(test_patch).cuda()
 
                 y1 = net(test_patch)
+                print(y1.shape)
+                print(y1[0,:,0,0,0])
                 y = F.softmax(y1, dim=1)
                 y = y.cpu().data.numpy()
+                print(y.shape)
+                print(y[0,:,0,0,0])
                 y = y[0,:,:,:,:]
                 score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
                   = score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + y
