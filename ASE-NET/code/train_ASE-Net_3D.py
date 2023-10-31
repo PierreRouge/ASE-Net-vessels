@@ -135,10 +135,10 @@ if __name__ == "__main__":
     ema_model = create_model(ema=True).to(device)
 
 
-    DAN = Discriminator_3D(num_classes=num_classes-1)
+    DAN = Discriminator_3D(num_classes=num_classes)
     DAN = DAN.to(device)
 
-    DAN1 = Discriminator_3D(num_classes=num_classes-1)
+    DAN1 = Discriminator_3D(num_classes=num_classes)
     DAN1 = DAN1.to(device)
     db_train = LAHeart(base_dir=train_data_path,
                        split='train',  # train/val split
