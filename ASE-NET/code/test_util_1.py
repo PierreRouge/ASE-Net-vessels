@@ -96,11 +96,19 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
                   = score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + y
                 cnt[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
                   = cnt[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] + 1
+    print("score map sum")
+    print(np.sum(score_map))
     score_map = score_map/np.expand_dims(cnt,axis=0)
     label_map = np.argmax(score_map, axis = 0)
+    print("score map sum 1")
+    print(np.sum(score_map))
+    print("label map")
+    print(np.sum(label_map))
     if add_pad:
         label_map = label_map[wl_pad:wl_pad+w,hl_pad:hl_pad+h,dl_pad:dl_pad+d]
         score_map = score_map[:,wl_pad:wl_pad+w,hl_pad:hl_pad+h,dl_pad:dl_pad+d]
+    print("label map 2")
+    print(np.sum(label_map))
     return label_map, score_map
 
 def cal_dice(prediction, label, num=2):
