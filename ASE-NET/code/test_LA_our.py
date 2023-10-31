@@ -20,7 +20,7 @@ parser.add_argument('--nms', type=int, default=0,
 FLAGS = parser.parse_args()
 
 os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.gpu
-snapshot_path = "weight_our/LA/{}".format(FLAGS.model)
+snapshot_path = "weight_our/{}".format(FLAGS.model)
 
 num_classes = 2
 
