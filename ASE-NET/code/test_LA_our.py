@@ -11,6 +11,7 @@ parser.add_argument('--root_path', type=str,
 parser.add_argument('--model', type=str,
                     default='DTC_with_consis_weight_16labels_beta_0.3', help='model_name')
 parser.add_argument('--gpu', type=str,  default='0', help='GPU to use')
+parser.add_argument('--patch_size', nargs='+', type=int, default=[128, 128, 128], help='Patch _size')
 parser.add_argument('--detail', type=int,  default=1,
                     help='print metrics for every samples?')
 parser.add_argument('--nms', type=int, default=0,
@@ -28,9 +29,9 @@ test_save_path = os.path.join(snapshot_path, "test/")
 if not os.path.exists(test_save_path):
     os.makedirs(test_save_path)
 print(test_save_path)
-with open(FLAGS.root_path + '/test.list', 'r') as f:
+with open(FLAGS.root_path + '/../test.list', 'r') as f:
     image_list = f.readlines()
-image_list = [FLAGS.root_path + "/" + item.replace('\n', '') + "/mri_norm2.h5" for item in
+image_list = [FLAGS.root_path + "/" + item.replace('\n', '') + "/mra_norm.h5" for item in
               image_list]
 
 
@@ -38,13 +39,13 @@ def test_calculate_metric():
     net = VNet_dy(n_channels=1, n_classes=num_classes-1,
                normalization='batchnorm', has_dropout=False).cuda()
     save_mode_path = os.path.join(
-        snapshot_path, 'iter_5500.pth')#3500 87 
+        snapshot_path, 'iter_1200.pth')#3500 87 
     net.load_state_dict(torch.load(save_mode_path))
     print("init weight from {}".format(save_mode_path))
     net.eval()
 
     avg_metric = test_all_case(net, image_list, num_classes=num_classes,
-                               patch_size=(128, 128, 128), stride_xy=18, stride_z=4,
+                               patch_size=tuple(FLAGS.patch_size), stride_xy=18, stride_z=4,
                                save_result=True, test_save_path=test_save_path,
                                metric_detail=FLAGS.detail, nms=FLAGS.nms)
 
