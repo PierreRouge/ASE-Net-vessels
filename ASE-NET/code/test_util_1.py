@@ -15,6 +15,8 @@ def test_all_case(net, image_list, num_classes, patch_size=(112, 112, 80), strid
         h5f = h5py.File(image_path, 'r')
         image = h5f['image'][:]
         label = h5f['label'][:]
+        print("Image sum:")
+        print(np.sum(image))
         if preproc_fn is not None:
             image = preproc_fn(image)
         prediction, score_map = test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=num_classes)
@@ -69,6 +71,8 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
     score_map = np.zeros((num_classes, ) + image.shape).astype(np.float32)
     cnt = np.zeros(image.shape).astype(np.float32)
 
+    print("Image sum2")
+    print(np.sum(image))
     for x in range(0, sx):
         xs = min(stride_xy*x, ww-patch_size[0])
         for y in range(0, sy):
@@ -78,8 +82,14 @@ def test_single_case(net, image, stride_xy, stride_z, patch_size, num_classes=1)
                 test_patch = image[xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]]
                 test_patch = np.expand_dims(np.expand_dims(test_patch,axis=0),axis=0).astype(np.float32)
                 test_patch = torch.from_numpy(test_patch).cuda()
+                print("test_patch sum")
+                print(torch.sum(test_patch))
                 y1 = net(test_patch)
+                print("y1 sum")
+                print(torch.sum(y1))
                 y = F.softmax(y1, dim=1)
+                print("y sum")
+                print(torch.sum(y))
                 y = y.cpu().data.numpy()
                 y = y[0,:,:,:,:]
                 score_map[:, xs:xs+patch_size[0], ys:ys+patch_size[1], zs:zs+patch_size[2]] \
