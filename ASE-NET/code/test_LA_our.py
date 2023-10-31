@@ -39,7 +39,7 @@ def test_calculate_metric():
     net = VNet_dy(n_channels=1, n_classes=num_classes-1,
                normalization='batchnorm', has_dropout=False).cuda()
     save_mode_path = os.path.join(
-        snapshot_path, 'iter_1200.pth')#3500 87 
+        snapshot_path, 'iter_12000.pth')#3500 87 
     net.load_state_dict(torch.load(save_mode_path))
     print("init weight from {}".format(save_mode_path))
     net.eval()
