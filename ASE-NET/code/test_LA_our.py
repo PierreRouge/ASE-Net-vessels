@@ -45,8 +45,7 @@ def test_calculate_metric():
 
     avg_metric = test_all_case(net, image_list, num_classes=num_classes,
                                patch_size=tuple(FLAGS.patch_size), stride_xy=18, stride_z=4,
-                               save_result=True, test_save_path=test_save_path,
-                               metric_detail=FLAGS.detail, nms=FLAGS.nms)
+                               save_result=True, test_save_path=test_save_path)
 
     return avg_metric
 
