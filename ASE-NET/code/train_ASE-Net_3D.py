@@ -168,7 +168,7 @@ if __name__ == "__main__":
     # optimizer = optim.SGD(model.parameters(), lr=base_lr,
     #                       momentum=0.9, weight_decay=0.0001)
     optimizer = optim.Adam(
-        model.parameters(), lr=0.01, betas=(0.9, 0.99))
+        model.parameters(), lr=0.1, betas=(0.9, 0.99))
     ce_loss = nn.CrossEntropyLoss()
     mse_loss = MSELoss()
     best_dice = 0
@@ -276,8 +276,8 @@ if __name__ == "__main__":
             consistency_loss = F.cross_entropy(DAN_outputs, DAN_target.long())
             consistency_loss1 = F.cross_entropy(DAN_outputs1, DAN_target.long())
             
-            # supervised_loss = (loss_seg_dice + loss_seg)*0.5
-            supervised_loss = loss_seg_dice
+            supervised_loss = (loss_seg_dice + loss_seg)*0.5
+            # supervised_loss = loss_seg_dice
 
             consistency_weight = get_current_consistency_weight(iter_num//150)
 
@@ -316,7 +316,7 @@ if __name__ == "__main__":
                 grid_image = make_grid(image, 5, normalize=True)
                 writer.add_image('train/Image', grid_image, iter_num)
 
-                image = outputs_soft_1[0, 0:1, :, :, 20:61:10].permute(
+                image = outputs_soft_1[0, 1:2, :, :, 20:61:10].permute(
                     3, 0, 1, 2).repeat(1, 3, 1, 1)
                 grid_image = make_grid(image, 5, normalize=False)
                 writer.add_image('train/Predicted_label', grid_image, iter_num)
