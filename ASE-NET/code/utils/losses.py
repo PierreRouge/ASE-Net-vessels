@@ -15,6 +15,10 @@ def dice_loss(score, target):
     loss = 1 - loss
     return loss
 
+# def dice_loss_multiclass(score, target):
+#     target = target.float()
+    
+
 
 def dice_loss1(score, target):
     target = target.float()

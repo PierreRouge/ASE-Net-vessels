@@ -36,9 +36,9 @@ parser.add_argument('--exp', type=str,
                     default='LA/DTC_with_consis_weight', help='model_name')
 parser.add_argument('--max_iterations', type=int,
                     default=6000, help='maximum epoch number to train')
-parser.add_argument('--batch_size', type=int, default=2,
+parser.add_argument('--batch_size', type=int, default=4,
                     help='batch_size per gpu')
-parser.add_argument('--labeled_bs', type=int, default=1,
+parser.add_argument('--labeled_bs', type=int, default=2,
                     help='labeled_batch_size per gpu')
 parser.add_argument('--base_lr', type=float,  default=0.01,
                     help='maximum epoch number to train')
@@ -168,8 +168,8 @@ if __name__ == "__main__":
     # optimizer = optim.SGD(model.parameters(), lr=base_lr,
     #                       momentum=0.9, weight_decay=0.0001)
     optimizer = optim.Adam(
-        model.parameters(), lr=0.001, betas=(0.9, 0.99))
-    ce_loss = BCEWithLogitsLoss()
+        model.parameters(), lr=0.1, betas=(0.9, 0.99))
+    ce_loss = nn.CrossEntropyLoss()
     mse_loss = MSELoss()
     best_dice = 0
     if args.consistency_type == 'mse':
@@ -201,8 +201,8 @@ if __name__ == "__main__":
                 volume_batch[labeled_bs:]) * 0.1, -0.2, 0.2)
             ema_inputs = volume_batch[labeled_bs:] + noise
 
-            DAN_target = torch.tensor([1] * 1).to(device)
-            DAN_target_unlabel = torch.tensor([0] * 1).to(device)
+            DAN_target = torch.tensor([1] * 2).to(device)
+            DAN_target_unlabel = torch.tensor([0] * 2).to(device)
             
            
 
@@ -212,13 +212,13 @@ if __name__ == "__main__":
             DAN1.train()
             DAN.train()
             
+           
             with torch.no_grad():
                 outputs_q = model(volume_batch.float()).detach()
                 outputs_soft = F.softmax(outputs_q, dim=1)
                 outputs_soft_labeled = outputs_soft[:labeled_bs]
                 outputs_soft_unlabel = outputs_soft[labeled_bs:]
-
-
+                
                 output_noise = model(ema_inputs).detach()
                 output_noise_soft = F.softmax(output_noise, dim=1)
                 outputs_ulabel_te = ema_model(volume_batch[labeled_bs:]).detach()
@@ -252,7 +252,7 @@ if __name__ == "__main__":
             DAN.eval()
 
 
-
+            
 
             outputs = model(volume_batch)
             outputs_soft_1 = F.softmax(outputs, dim=1)
@@ -266,9 +266,9 @@ if __name__ == "__main__":
             loss_lu = losses.softmax_mse_loss_three(outputs_ulabel,output_noise,ema_output)
             consistency_dist = torch.mean(loss_lu)
             loss_seg = ce_loss(
-                outputs[:labeled_bs, 0, ...], label_batch[:labeled_bs].float())
+                outputs[:labeled_bs, :, ...], label_batch[:labeled_bs].long())
             loss_seg_dice = losses.dice_loss(
-                outputs_soft[:labeled_bs, 0, :, :, :], label_batch[:labeled_bs] == 1)
+                outputs_soft_1[:labeled_bs, 1, :, :, :], label_batch[:labeled_bs])
             
             DAN_outputs = DAN(outputs_soft_unlabel_dan, volume_batch[labeled_bs:])
 
@@ -277,10 +277,11 @@ if __name__ == "__main__":
             consistency_loss1 = F.cross_entropy(DAN_outputs1, DAN_target.long())
             
             supervised_loss = (loss_seg_dice + loss_seg)*0.5
+            # supervised_loss = loss_seg
 
             consistency_weight = get_current_consistency_weight(iter_num//150)
 
-            loss = supervised_loss + consistency_weight*((consistency_loss+consistency_loss1)*0.5+consistency_dist)
+            loss = supervised_loss #+ consistency_weight*((consistency_loss+consistency_loss1)*0.5+consistency_dist)
 
 
             optimizer.zero_grad()
@@ -315,7 +316,7 @@ if __name__ == "__main__":
                 grid_image = make_grid(image, 5, normalize=True)
                 writer.add_image('train/Image', grid_image, iter_num)
 
-                image = outputs_soft[0, 0:1, :, :, 20:61:10].permute(
+                image = outputs_soft_1[0, 1, :, :, 20:61:10].permute(
                     3, 0, 1, 2).repeat(1, 3, 1, 1)
                 grid_image = make_grid(image, 5, normalize=False)
                 writer.add_image('train/Predicted_label', grid_image, iter_num)
