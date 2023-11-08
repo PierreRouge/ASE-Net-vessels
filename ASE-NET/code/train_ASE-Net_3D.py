@@ -31,7 +31,7 @@ from utils.util import compute_sdf
 from test_util_1 import test_all_case
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str,
-                    default='../data/2018LA_Seg_Training Set', help='Name of Experiment')
+                    default='../../../data/Bullitt_training_set/Patients', help='Name of Experiment')
 parser.add_argument('--exp', type=str,
                     default='LA/DTC_with_consis_weight', help='model_name')
 parser.add_argument('--max_iterations', type=int,
@@ -46,9 +46,9 @@ parser.add_argument('--D_lr', type=float,  default=1e-4,
                     help='maximum discriminator learning rate to train')
 parser.add_argument('--deterministic', type=int,  default=1,
                     help='whether use deterministic training')
-parser.add_argument('--labelnum', type=int,  default=42, help='random seed')
-parser.add_argument('--maxsamples', type=int,  default=350, help='Number of total samples')
-parser.add_argument('--patch_size', nargs='+', type=int, default=[128, 128, 128], help='Patch _size')
+parser.add_argument('--labelnum', type=int,  default=9, help='random seed')
+parser.add_argument('--maxsamples', type=int,  default=94, help='Number of total samples')
+parser.add_argument('--patch_size', nargs='+', type=int, default=[64, 64, 64], help='Patch _size')
 parser.add_argument('--seed', type=int,  default=1337, help='random seed')
 parser.add_argument('--consistency_weight', type=float,  default=0.1,
                     help='balance factor to control supervised loss and consistency loss')
@@ -214,15 +214,15 @@ if __name__ == "__main__":
             
             with torch.no_grad():
                 outputs_q = model(volume_batch.float()).detach()
-                outputs_soft = torch.sigmoid(outputs_q)
+                outputs_soft = F.softmax(outputs_q, dim=1)
                 outputs_soft_labeled = outputs_soft[:labeled_bs]
                 outputs_soft_unlabel = outputs_soft[labeled_bs:]
 
 
                 output_noise = model(ema_inputs).detach()
-                output_noise_soft = torch.sigmoid(output_noise)
+                output_noise_soft = F.softmax(output_noise, dim=1)
                 outputs_ulabel_te = ema_model(volume_batch[labeled_bs:]).detach()
-                outputs_soft_unlabel_te = torch.sigmoid(outputs_ulabel_te)
+                outputs_soft_unlabel_te = F.softmax(outputs_ulabel_te, dim=1)
 
             DAN_outputs = DAN(outputs_soft_labeled.float(), volume_batch[:labeled_bs])
             DAN_loss1 = F.cross_entropy(DAN_outputs, DAN_target.long())
@@ -255,14 +255,14 @@ if __name__ == "__main__":
 
 
             outputs = model(volume_batch)
-            outputs_soft_1 = torch.sigmoid(outputs)
+            outputs_soft_1 = F.softmax(outputs, dim=1)
             # calculate the loss
             ema_output = ema_model(ema_inputs)
             output_noise = model(ema_inputs)
 
             outputs_ulabel = outputs[labeled_bs:]
             outputs_soft_unlabel_dan = outputs_soft_1[labeled_bs:]
-            output_noise_soft_dan = torch.sigmoid(output_noise)
+            output_noise_soft_dan = F.softmax(output_noise, dim=1)
             loss_lu = losses.softmax_mse_loss_three(outputs_ulabel,output_noise,ema_output)
             consistency_dist = torch.mean(loss_lu)
             loss_seg = ce_loss(
