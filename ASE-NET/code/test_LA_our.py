@@ -35,7 +35,7 @@ image_list = [FLAGS.root_path + "/" + item.replace('\n', '') + "/mra_norm.h5" fo
 
 
 def test_calculate_metric():
-    net = VNet(n_channels=1, n_classes=num_classes,
+    net = VNet(n_channels=2, n_classes=num_classes,
                normalization='batchnorm', has_dropout=False).cuda()
     save_mode_path = os.path.join(
         snapshot_path, 'iter_12000.pth')#3500 87 
