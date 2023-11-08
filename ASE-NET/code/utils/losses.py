@@ -9,8 +9,8 @@ def dice_loss(score, target):
     target = target.float()
     smooth = 1e-5
     intersect = torch.sum(score * target)
-    y_sum = torch.sum(target * target)
-    z_sum = torch.sum(score * score)
+    y_sum = torch.sum(target)
+    z_sum = torch.sum(score)
     loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
     loss = 1 - loss
     return loss
